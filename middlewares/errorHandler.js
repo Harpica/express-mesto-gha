@@ -12,7 +12,7 @@ class BadRequestError extends HttpError {
 }
 
 class DocumentNotFoundError extends HttpError {
-  constructor(message) {
+  constructor(message = "Not found") {
     super(message);
     this.statusCode = 404;
   }
