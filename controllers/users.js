@@ -29,9 +29,9 @@ export const getUserById = (req, res, next) => {
       }
     })
     .catch((err) => {
-      err = new DocumentNotFoundError(
-        "Пользователь по указанному _id не найден"
-      );
+      if (!(err instanceof DocumentNotFoundError)) {
+        err = new BadRequestError("Некорректный _id");
+      }
       next(err);
     });
 };

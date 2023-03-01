@@ -45,6 +45,9 @@ export const deleteCardById = (req, res, next) => {
       }
     })
     .catch((err) => {
+      if (!(err instanceof DocumentNotFoundError)) {
+        err = new BadRequestError("Некорректный _id");
+      }
       next(err);
     });
 };
@@ -68,6 +71,8 @@ export const likeCard = (req, res, next) => {
         err = new BadRequestError(
           "Переданы некорректные данные для постановки/снятии лайка. "
         );
+      } else if (!(err instanceof DocumentNotFoundError)) {
+        err = new BadRequestError("Некорректный _id");
       }
       next(err);
     });
@@ -92,6 +97,8 @@ export const dislikeCard = (req, res, next) => {
         err = new BadRequestError(
           "Переданы некорректные данные для постановки/снятии лайка. "
         );
+      } else if (!(err instanceof DocumentNotFoundError)) {
+        err = new BadRequestError("Некорректный _id");
       }
       next(err);
     });
