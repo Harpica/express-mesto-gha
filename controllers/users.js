@@ -64,6 +64,7 @@ export const updateUser = (req, res, next) => {
       {
         new: true,
         runValidators: true,
+        upsert: true,
       }
     )
     .then((user) => {
@@ -89,7 +90,15 @@ export const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   const id = req.user._id;
   user
-    .findByIdAndUpdate(id, { avatar })
+    .findByIdAndUpdate(
+      id,
+      { avatar },
+      {
+        new: true,
+        runValidators: true,
+        upsert: true,
+      }
+    )
     .then((user) => {
       if (user) {
         res.send({ data: user });

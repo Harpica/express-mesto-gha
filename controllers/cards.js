@@ -70,7 +70,7 @@ export const likeCard = (req, res, next) => {
     });
 };
 
-export const dislikeCard = (req, res) => {
+export const dislikeCard = (req, res, next) => {
   card
     .findByIdAndUpdate(
       req.params.cardId,

@@ -11,6 +11,6 @@ export const users = express.Router();
 
 users.get("/", getUsers);
 users.post("/", createUser);
-users.patch("/me", updateUser);
 users.patch("/me/avatar", updateAvatar);
+users.patch("/me", updateUser);
 users.get("/:id", getUserById);
