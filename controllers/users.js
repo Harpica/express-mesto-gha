@@ -20,7 +20,13 @@ export const getUserById = (req, res, next) => {
   user
     .findById(id)
     .then((user) => {
-      res.send({ data: user });
+      if (user !== null) {
+        res.send({ data: user });
+      } else {
+        throw new DocumentNotFoundError(
+          "Пользователь по указанному _id не найден"
+        );
+      }
     })
     .catch((err) => {
       err = new DocumentNotFoundError(
@@ -61,7 +67,7 @@ export const updateUser = (req, res, next) => {
       }
     )
     .then((user) => {
-      if (user) {
+      if (user !== null) {
         res.send({ data: user });
       } else {
         throw new DocumentNotFoundError(

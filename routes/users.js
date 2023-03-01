@@ -10,7 +10,7 @@ import {
 export const users = express.Router();
 
 users.get("/", getUsers);
-users.get("/:id", getUserById);
 users.post("/", createUser);
 users.patch("/me", updateUser);
 users.patch("/me/avatar", updateAvatar);
+users.get("/:id", getUserById);

@@ -11,6 +11,6 @@ export const cards = express.Router();
 
 cards.get("/", getCards);
 cards.post("/", createCard);
-cards.delete("/:id", deleteCardById);
-cards.put("/:id/likes", likeCard);
-cards.delete("/:id/likes", dislikeCard);
+cards.put("/:cardId/likes", likeCard);
+cards.delete("/:cardId/likes", dislikeCard);
+cards.delete("/:cardId", deleteCardById);
