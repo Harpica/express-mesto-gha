@@ -36,12 +36,15 @@ export const createCard = (req, res, next) => {
 export const deleteCardById = (req, res, next) => {
   const id = req.params.id;
   card
-    .findByIdAndRemove(id)
+    .findByIdAndDelete(id)
     .then((card) => {
-      res.send({ data: card });
+      if (card) {
+        res.send({ data: card });
+      } else {
+        throw new DocumentNotFoundError("Карточка c указанным _id не найдена");
+      }
     })
     .catch((err) => {
-      err = new DocumentNotFoundError("Карточка c указанным _id не найдена");
       next(err);
     });
 };

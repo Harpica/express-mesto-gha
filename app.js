@@ -4,7 +4,10 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import { users } from "./routes/users.js";
 import { cards } from "./routes/cards.js";
-import { errorHandler } from "./middlewares/errorHandler.js";
+import {
+  DocumentNotFoundError,
+  errorHandler,
+} from "./middlewares/errorHandler.js";
 
 // Usage of .env file in the root dir
 dotenv.config();
@@ -30,6 +33,9 @@ app.use((req, res, next) => {
 // Apply routers
 app.use("/users", users);
 app.use("/cards", cards);
+app.use((req, res) => {
+  throw new DocumentNotFoundError("Данная страница не найдена");
+});
 app.use(errorHandler);
 
 // Connect to db and after successfull connection - start listening to the PORT
