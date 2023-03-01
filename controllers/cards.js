@@ -34,7 +34,7 @@ export const createCard = (req, res, next) => {
 };
 
 export const deleteCardById = (req, res, next) => {
-  const id = req.params.id;
+  const id = req.params.cardId;
   card
     .findByIdAndDelete(id)
     .then((card) => {
