@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
-import {
-  BadRequestError,
-  DocumentNotFoundError,
-} from '../middlewares/errorHandler.js';
+import BadRequestError from '../utils/errors/BadRequestError.js';
+import DocumentNotFoundError from '../utils/errors/DocumentNotFoundError.js';
 import Card from '../models/card.js';
 
 export const getCards = (_req, res, next) => {
@@ -20,14 +18,17 @@ export const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
-    .populate(['owner', 'likes'])
+    .then((newCard) => {
+      const card = newCard.populate(['owner', 'likes']);
+      return card;
+    })
     .then((card) => {
       res.send({ data: card });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         const newErr = new BadRequestError(
-          'Переданы некорректные данные при создании карточки',
+          'Переданы некорректные данные при создании карточки'
         );
         next(newErr);
         return;
@@ -61,7 +62,7 @@ export const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true },
+    { new: true }
   )
     .populate(['owner', 'likes'])
     .then((card) => {
@@ -74,7 +75,7 @@ export const likeCard = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         const newErr = new BadRequestError(
-          'Переданы некорректные данные для постановки/снятии лайка. ',
+          'Переданы некорректные данные для постановки/снятии лайка. '
         );
         next(newErr);
         return;
@@ -92,7 +93,7 @@ export const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true },
+    { new: true }
   )
     .populate(['owner', 'likes'])
     .then((card) => {
@@ -105,7 +106,7 @@ export const dislikeCard = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         const newErr = new BadRequestError(
-          'Переданы некорректные данные для постановки/снятии лайка. ',
+          'Переданы некорректные данные для постановки/снятии лайка. '
         );
         next(newErr);
         return;
