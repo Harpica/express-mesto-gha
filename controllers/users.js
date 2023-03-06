@@ -19,7 +19,7 @@ export const getUserById = (req, res, next) => {
         res.send({ data: user });
       } else {
         throw new DocumentNotFoundError(
-          'Пользователь по указанному _id не найден'
+          'Пользователь по указанному _id не найден',
         );
       }
     })
@@ -42,8 +42,8 @@ export const createUser = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при создании пользователя'
-          )
+            'Переданы некорректные данные при создании пользователя',
+          ),
         );
         return;
       }
@@ -60,14 +60,14 @@ export const updateUser = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => {
       if (user !== null) {
         res.send({ data: user });
       } else {
         throw new DocumentNotFoundError(
-          'Пользователь по указанному _id не найден'
+          'Пользователь по указанному _id не найден',
         );
       }
     })
@@ -75,8 +75,8 @@ export const updateUser = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при обновлении профиля'
-          )
+            'Переданы некорректные данные при обновлении профиля',
+          ),
         );
         return;
       }
@@ -93,14 +93,14 @@ export const updateAvatar = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => {
       if (user) {
         res.send({ data: user });
       } else {
         throw new DocumentNotFoundError(
-          'Пользователь по указанному _id не найден'
+          'Пользователь по указанному _id не найден',
         );
       }
     })
@@ -108,8 +108,8 @@ export const updateAvatar = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при обновлении аватара'
-          )
+            'Переданы некорректные данные при обновлении аватара',
+          ),
         );
         return;
       }
