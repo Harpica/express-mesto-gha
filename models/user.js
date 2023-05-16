@@ -35,7 +35,6 @@ const userSchema = mongoose.Schema({
     select: false,
   },
 });
-const User = mongoose.model('user', userSchema);
 
 userSchema.statics.generateHash = function (password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync());
@@ -49,11 +48,12 @@ userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email })
     .select('+password')
     .then((user) => {
-      if (!user || !User.validatePassword(password, user.password)) {
+      if (!user || !this.validatePassword(password, user.password)) {
         throw new UnauthorizedError('Неверная почта или пароль');
       }
       return user.select('-password');
     });
 };
 
+const User = mongoose.model('user', userSchema);
 export default User;
