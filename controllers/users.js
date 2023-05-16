@@ -1,7 +1,11 @@
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 import BadRequestError from '../utils/errors/BadRequestError.js';
 import DocumentNotFoundError from '../utils/errors/DocumentNotFoundError.js';
 import User from '../models/user.js';
+import UnauthorizedError from '../utils/errors/UnauthorizedError.js';
+import { JWT_KEY } from '../utils/constants.js';
+import ConflictError from '../utils/errors/ConflictError.js';
 
 export const getUsers = (_req, res, next) => {
   User.find({})
@@ -13,13 +17,22 @@ export const getUsers = (_req, res, next) => {
 
 export const getUserById = (req, res, next) => {
   const { id } = req.params;
+  findUserById(id, res, next);
+};
+
+export const getMyUser = (req, res, next) => {
+  const id = req.user;
+  findUserById(id, res, next);
+};
+
+const findUserById = (id, res, next) => {
   User.findById(id)
     .then((user) => {
       if (user !== null) {
         res.send({ data: user });
       } else {
         throw new DocumentNotFoundError(
-          'Пользователь по указанному _id не найден',
+          'Пользователь по указанному _id не найден'
         );
       }
     })
@@ -34,17 +47,43 @@ export const getUserById = (req, res, next) => {
 
 export const createUser = (req, res, next) => {
   const userData = req.body;
+  userData.password = User.generateHash(userData.password);
   User.create(userData)
     .then((user) => {
       res.send({ data: user });
     })
     .catch((err) => {
+      if (err.code === 11000) {
+        next(new ConflictError('Такой e-mail уже используется'));
+        return;
+      }
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при создании пользователя',
-          ),
+            'Переданы некорректные данные при создании пользователя'
+          )
         );
+        return;
+      }
+      next(err);
+    });
+};
+
+export const loginUser = async (req, res, next) => {
+  const { email, password } = req.query;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_KEY, { expiresIn: '7d' });
+      res
+        .cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 7,
+          httpOnly: true,
+        })
+        .end();
+    })
+    .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        next(new UnauthorizedError('Неверная почта или пароль'));
         return;
       }
       next(err);
@@ -60,14 +99,14 @@ export const updateUser = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    },
+    }
   )
     .then((user) => {
       if (user !== null) {
         res.send({ data: user });
       } else {
         throw new DocumentNotFoundError(
-          'Пользователь по указанному _id не найден',
+          'Пользователь по указанному _id не найден'
         );
       }
     })
@@ -75,8 +114,8 @@ export const updateUser = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при обновлении профиля',
-          ),
+            'Переданы некорректные данные при обновлении профиля'
+          )
         );
         return;
       }
@@ -93,14 +132,14 @@ export const updateAvatar = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    },
+    }
   )
     .then((user) => {
       if (user) {
         res.send({ data: user });
       } else {
         throw new DocumentNotFoundError(
-          'Пользователь по указанному _id не найден',
+          'Пользователь по указанному _id не найден'
         );
       }
     })
@@ -108,8 +147,8 @@ export const updateAvatar = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при обновлении аватара',
-          ),
+            'Переданы некорректные данные при обновлении аватара'
+          )
         );
         return;
       }

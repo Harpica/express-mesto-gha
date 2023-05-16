@@ -4,11 +4,11 @@ const errorHandler = (err, _req, res, next) => {
   if (err instanceof HttpError) {
     res.status(err.statusCode).send({ message: err.message });
     next();
-  } else {
-    console.log({ message: err.message });
-    res.status(500).send({ message: 'Ошибка на сервере' });
-    next();
+    return;
   }
+  console.log({ message: err.message });
+  res.status(500).send({ message: 'Ошибка на сервере' });
+  next();
 };
 
 export default errorHandler;

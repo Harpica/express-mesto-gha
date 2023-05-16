@@ -6,9 +6,11 @@ import {
   getCards,
   likeCard,
 } from '../../controllers/cards.js';
+import auth from '../../middlewares/auth.js';
 
 const cards = express.Router();
 
+cards.use(auth);
 cards.get('/', getCards);
 cards.post('/', createCard);
 cards.put('/:cardId/likes', likeCard);
