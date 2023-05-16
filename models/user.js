@@ -1,11 +1,8 @@
 import mongoose from 'mongoose';
 import isEmail from 'validator/lib/isEmail.js';
+import isURL from 'validator/lib/isURL';
 import bcrypt from 'bcrypt';
-import UnauthorizedError from '../utils/errors/UnauthorizedError';
-
-function emailValidator(value) {
-  return isEmail(value);
-}
+import UnauthorizedError from '../utils/errors/UnauthorizedError.js';
 
 const userSchema = mongoose.Schema({
   name: {
@@ -24,12 +21,13 @@ const userSchema = mongoose.Schema({
     type: String,
     default:
       'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    validate: [isURL, 'Value is not valid url'],
   },
   email: {
     type: String,
     unique: true,
     required: true,
-    validate: [emailValidator, 'Value is not email'],
+    validate: [isEmail, 'Value is not valid email'],
   },
   password: {
     type: String,
@@ -54,7 +52,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
       if (!user || !User.validatePassword(password, user.password)) {
         throw new UnauthorizedError('Неверная почта или пароль');
       }
-      return user;
+      return user.select('-password');
     });
 };
 

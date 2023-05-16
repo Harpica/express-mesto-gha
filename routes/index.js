@@ -4,6 +4,7 @@ import DocumentNotFoundError from '../utils/errors/DocumentNotFoundError.js';
 import cards from './partials/cards.js';
 import users from './partials/users.js';
 import { createUser, loginUser } from '../controllers/users.js';
+import { errors } from 'celebrate';
 
 const routes = express.Router();
 
@@ -16,6 +17,7 @@ routes.use(() => {
   throw new DocumentNotFoundError('Данная страница не найдена');
 });
 // Middleware to handle all errors
+routes.use(errors);
 routes.use(errorHandler);
 
 export default routes;
