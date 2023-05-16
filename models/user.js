@@ -51,7 +51,8 @@ userSchema.statics.findUserByCredentials = function (email, password) {
       if (!user || !this.validatePassword(password, user.password)) {
         throw new UnauthorizedError('Неверная почта или пароль');
       }
-      return user.select('-password');
+      delete user.password;
+      return user;
     });
 };
 

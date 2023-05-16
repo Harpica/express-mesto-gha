@@ -50,6 +50,8 @@ export const createUser = (req, res, next) => {
   userData.password = User.generateHash(userData.password);
   User.create(userData)
     .then((user) => {
+      user = user.toObject();
+      delete user.password;
       res.send({ data: user });
     })
     .catch((err) => {
