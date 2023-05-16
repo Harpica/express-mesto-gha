@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import isEmail from 'validator/lib/isEmail.js';
-import isURL from 'validator/lib/isURL';
+import isURL from 'validator/lib/isURL.js';
 import bcrypt from 'bcrypt';
 import UnauthorizedError from '../utils/errors/UnauthorizedError.js';
 
