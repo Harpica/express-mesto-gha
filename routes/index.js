@@ -10,7 +10,7 @@ import { createUser, loginUser } from '../controllers/users.js';
 const routes = express.Router();
 
 routes.post('/signin', celebrate(validator.auth.login), loginUser);
-routes.post('/signup', celebrate(validator.auth.login), createUser);
+routes.post('/signup', celebrate(validator.auth.registration), createUser);
 routes.use('/users', users);
 routes.use('/cards', cards);
 // Any other path
