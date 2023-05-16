@@ -1,8 +1,7 @@
-import { isCelebrateError } from 'celebrate';
 import HttpError from '../utils/errors/HttpError.js';
 
 const errorHandler = (err, _req, res, next) => {
-  if (err instanceof HttpError || isCelebrateError(err)) {
+  if (err instanceof HttpError) {
     res.status(err.statusCode).send({ message: err.message });
     next();
     return;

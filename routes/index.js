@@ -18,7 +18,7 @@ routes.use(() => {
   throw new DocumentNotFoundError('Данная страница не найдена');
 });
 // Middleware to handle all errors
-routes.use(errors);
+routes.use(errors());
 routes.use(errorHandler);
 
 export default routes;
