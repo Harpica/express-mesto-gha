@@ -29,8 +29,8 @@ export const createCard = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при создании карточки'
-          )
+            'Переданы некорректные данные при создании карточки',
+          ),
         );
         return;
       }
@@ -48,7 +48,7 @@ export const deleteCardById = (req, res, next) => {
       }
       if (card.owner !== req.user) {
         throw new BadRequestError(
-          'Пользователь не является владельцем карточки'
+          'Пользователь не является владельцем карточки',
         );
       }
       await Card.findByIdAndDelete(card._id);
@@ -67,7 +67,7 @@ export const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true }
+    { new: true },
   )
     .populate(['owner', 'likes'])
     .then((card) => {
@@ -81,8 +81,8 @@ export const likeCard = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные для постановки/снятии лайка. '
-          )
+            'Переданы некорректные данные для постановки/снятии лайка. ',
+          ),
         );
         return;
       }
@@ -99,7 +99,7 @@ export const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true }
+    { new: true },
   )
     .populate(['owner', 'likes'])
     .then((card) => {
@@ -113,8 +113,8 @@ export const dislikeCard = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные для постановки/снятии лайка. '
-          )
+            'Переданы некорректные данные для постановки/снятии лайка. ',
+          ),
         );
         return;
       }

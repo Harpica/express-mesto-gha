@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 import isEmail from 'validator/lib/isEmail.js';
 import bcrypt from 'bcrypt';
+import UnauthorizedError from '../utils/errors/UnauthorizedError';
+
+function emailValidator(value) {
+  return isEmail(value);
+}
 
 const userSchema = mongoose.Schema({
   name: {
@@ -32,10 +37,7 @@ const userSchema = mongoose.Schema({
     select: false,
   },
 });
-
-function emailValidator(value) {
-  return isEmail(value);
-}
+const User = mongoose.model('user', userSchema);
 
 userSchema.statics.generateHash = function (password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync());
@@ -46,7 +48,7 @@ userSchema.statics.validatePassword = function (password, hash) {
 };
 
 userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email: email })
+  return this.findOne({ email })
     .select('+password')
     .then((user) => {
       if (!user || !User.validatePassword(password, user.password)) {
@@ -55,7 +57,5 @@ userSchema.statics.findUserByCredentials = function (email, password) {
       return user;
     });
 };
-
-const User = mongoose.model('user', userSchema);
 
 export default User;
