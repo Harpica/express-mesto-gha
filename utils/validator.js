@@ -19,7 +19,7 @@ const validator = {
           if (!isURL(value)) {
             return helper.message('Value is not valid url');
           }
-          return true;
+          return value;
         }),
       }),
     },
