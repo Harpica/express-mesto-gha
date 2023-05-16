@@ -4,6 +4,7 @@ import errorHandler from '../middlewares/errorHandler.js';
 import DocumentNotFoundError from '../utils/errors/DocumentNotFoundError.js';
 import cards from './partials/cards.js';
 import users from './partials/users.js';
+import validator from '../utils/validator.js';
 import { createUser, loginUser } from '../controllers/users.js';
 
 const routes = express.Router();
