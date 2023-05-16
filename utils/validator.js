@@ -1,6 +1,6 @@
 import { Joi } from 'celebrate';
 
-export const validator = {
+const validator = {
   auth: {
     login: {
       body: Joi.object().keys({
@@ -19,3 +19,5 @@ export const validator = {
     },
   },
 };
+
+export default validator;
