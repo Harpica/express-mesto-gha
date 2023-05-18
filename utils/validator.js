@@ -61,7 +61,7 @@ const validator = {
     },
     id: {
       params: {
-        id: Joi.string().required().min(24).max(24),
+        cardId: Joi.string().required().min(24).max(24),
       },
     },
   },
