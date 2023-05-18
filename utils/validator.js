@@ -27,7 +27,8 @@ const validator = {
   users: {
     id: {
       params: {
-        id: Joi.string().required().min(24).max(24).hex(),
+        id: Joi.string().required().min(24).max(24)
+          .hex(),
       },
     },
     update: {
@@ -63,7 +64,8 @@ const validator = {
     },
     id: {
       params: {
-        cardId: Joi.string().required().min(24).max(24).hex(),
+        cardId: Joi.string().required().min(24).max(24)
+          .hex(),
       },
     },
   },

@@ -25,8 +25,8 @@ export const createCard = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при создании карточки'
-          )
+            'Переданы некорректные данные при создании карточки',
+          ),
         );
         return;
       }
@@ -41,7 +41,7 @@ export const deleteCardById = (req, res, next) => {
     .then(async (card) => {
       if (card.owner.toString() !== req.user._id) {
         throw new ForbiddenError(
-          'Пользователь не является владельцем карточки'
+          'Пользователь не является владельцем карточки',
         );
       }
       await Card.findByIdAndDelete(card._id);
@@ -60,7 +60,7 @@ export const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true }
+    { new: true },
   )
     .orFail(new DocumentNotFoundError('Карточка c указанным _id не найдена'))
     .then((card) => {
@@ -80,7 +80,7 @@ export const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true }
+    { new: true },
   )
     .orFail(new DocumentNotFoundError('Карточка c указанным _id не найдена'))
     .then((card) => {
