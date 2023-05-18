@@ -6,7 +6,6 @@ import Card from '../models/card.js';
 
 export const getCards = (_req, res, next) => {
   Card.find({})
-    .populate(['owner', 'likes'])
     .then((cards) => {
       res.send({ data: cards });
     })
@@ -19,10 +18,6 @@ export const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
-    .then((newCard) => {
-      const card = newCard.populate(['owner', 'likes']);
-      return card;
-    })
     .then((card) => {
       res.send({ data: card });
     })
@@ -30,8 +25,8 @@ export const createCard = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при создании карточки',
-          ),
+            'Переданы некорректные данные при создании карточки'
+          )
         );
         return;
       }
@@ -42,14 +37,11 @@ export const createCard = (req, res, next) => {
 export const deleteCardById = (req, res, next) => {
   const id = req.params.cardId;
   Card.findById(id)
-    .populate(['owner', 'likes'])
+    .orFail(new DocumentNotFoundError('Карточка c указанным _id не найдена'))
     .then(async (card) => {
-      if (!card) {
-        throw new DocumentNotFoundError('Карточка c указанным _id не найдена');
-      }
-      if (card.owner._id.toString() !== req.user._id) {
+      if (card.owner.toString() !== req.user._id) {
         throw new ForbiddenError(
-          'Пользователь не является владельцем карточки',
+          'Пользователь не является владельцем карточки'
         );
       }
       await Card.findByIdAndDelete(card._id);
@@ -68,25 +60,13 @@ export const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true },
+    { new: true }
   )
-    .populate(['owner', 'likes'])
+    .orFail(new DocumentNotFoundError('Карточка c указанным _id не найдена'))
     .then((card) => {
-      if (card) {
-        res.send({ data: card });
-      } else {
-        throw new DocumentNotFoundError('Передан несуществующий _id карточки');
-      }
+      res.send({ data: card });
     })
     .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        next(
-          new BadRequestError(
-            'Переданы некорректные данные для постановки/снятии лайка. ',
-          ),
-        );
-        return;
-      }
       if (err instanceof mongoose.Error.CastError) {
         const newErr = new BadRequestError('Некорректный _id');
         next(newErr);
@@ -100,25 +80,13 @@ export const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true },
+    { new: true }
   )
-    .populate(['owner', 'likes'])
+    .orFail(new DocumentNotFoundError('Карточка c указанным _id не найдена'))
     .then((card) => {
-      if (card) {
-        res.send({ data: card });
-      } else {
-        throw new DocumentNotFoundError('Передан несуществующий _id карточки');
-      }
+      res.send({ data: card });
     })
     .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        next(
-          new BadRequestError(
-            'Переданы некорректные данные для постановки/снятии лайка. ',
-          ),
-        );
-        return;
-      }
       if (err instanceof mongoose.Error.CastError) {
         next(new BadRequestError('Некорректный _id'));
         return;

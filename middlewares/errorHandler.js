@@ -6,7 +6,6 @@ const errorHandler = (err, _req, res, next) => {
     next();
     return;
   }
-  console.log({ message: err.message });
   res.status(500).send({ message: 'Ошибка на сервере' });
   next();
 };
