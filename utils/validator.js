@@ -50,13 +50,15 @@ const validator = {
   cards: {
     add: {
       body: Joi.object().keys({
-        name: Joi.string().min(2).max(30),
-        link: Joi.string().custom((value, helper) => {
-          if (!isURL(value)) {
-            return helper.message('Value is not valid url');
-          }
-          return value;
-        }),
+        name: Joi.string().min(2).max(30).required(),
+        link: Joi.string()
+          .required()
+          .custom((value, helper) => {
+            if (!isURL(value)) {
+              return helper.message('Value is not valid url');
+            }
+            return value;
+          }),
       }),
     },
     id: {
