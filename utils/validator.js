@@ -24,6 +24,47 @@ const validator = {
       }),
     },
   },
+  users: {
+    id: {
+      params: {
+        id: Joi.string().required().min(24).max(24),
+      },
+    },
+    update: {
+      body: Joi.object().keys({
+        name: Joi.string().min(2).max(30),
+        about: Joi.string().min(2).max(30),
+      }),
+    },
+    avatar: {
+      body: Joi.object().keys({
+        avatar: Joi.string().custom((value, helper) => {
+          if (!isURL(value)) {
+            return helper.message('Value is not valid url');
+          }
+          return value;
+        }),
+      }),
+    },
+  },
+  cards: {
+    add: {
+      body: Joi.object().keys({
+        name: Joi.string().min(2).max(30),
+        link: Joi.string().custom((value, helper) => {
+          if (!isURL(value)) {
+            return helper.message('Value is not valid url');
+          }
+          return value;
+        }),
+      }),
+    },
+    id: {
+      params: {
+        id: Joi.string().required().min(24).max(24),
+      },
+    },
+  },
 };
 
 export default validator;

@@ -22,7 +22,7 @@ const findUserById = (id, res, next) => {
         res.send({ data: user });
       } else {
         throw new DocumentNotFoundError(
-          'Пользователь по указанному _id не найден'
+          'Пользователь по указанному _id не найден',
         );
       }
     })
@@ -50,9 +50,8 @@ export const createUser = (req, res, next) => {
   userData.password = User.generateHash(userData.password);
   User.create(userData)
     .then((user) => {
-      user = user.toObject();
-      delete user.password;
-      res.send({ data: user });
+      const newUser = user.getUserWithRemovedPassport();
+      res.send({ data: newUser });
     })
     .catch((err) => {
       if (err.code === 11000) {
@@ -62,8 +61,8 @@ export const createUser = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при создании пользователя'
-          )
+            'Переданы некорректные данные при создании пользователя',
+          ),
         );
         return;
       }
@@ -81,7 +80,7 @@ export const loginUser = async (req, res, next) => {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
         })
-        .end();
+        .send({ data: user });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
@@ -101,14 +100,14 @@ export const updateUser = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => {
       if (user !== null) {
         res.send({ data: user });
       } else {
         throw new DocumentNotFoundError(
-          'Пользователь по указанному _id не найден'
+          'Пользователь по указанному _id не найден',
         );
       }
     })
@@ -116,8 +115,8 @@ export const updateUser = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при обновлении профиля'
-          )
+            'Переданы некорректные данные при обновлении профиля',
+          ),
         );
         return;
       }
@@ -134,14 +133,14 @@ export const updateAvatar = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => {
       if (user) {
         res.send({ data: user });
       } else {
         throw new DocumentNotFoundError(
-          'Пользователь по указанному _id не найден'
+          'Пользователь по указанному _id не найден',
         );
       }
     })
@@ -149,8 +148,8 @@ export const updateAvatar = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при обновлении аватара'
-          )
+            'Переданы некорректные данные при обновлении аватара',
+          ),
         );
         return;
       }

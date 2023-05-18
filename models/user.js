@@ -36,6 +36,12 @@ const userSchema = mongoose.Schema({
   },
 });
 
+userSchema.methods.getUserWithRemovedPassport = function () {
+  const user = this.toObject();
+  delete user.password;
+  return user;
+};
+
 userSchema.statics.generateHash = function (password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync());
 };
@@ -51,8 +57,8 @@ userSchema.statics.findUserByCredentials = function (email, password) {
       if (!user || !this.validatePassword(password, user.password)) {
         throw new UnauthorizedError('Неверная почта или пароль');
       }
-      delete user.password;
-      return user;
+      const newUser = user.getUserWithRemovedPassport();
+      return newUser;
     });
 };
 

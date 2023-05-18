@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import isURL from 'validator/lib/isURL.js';
 
 const cardSchema = mongoose.Schema({
   name: {
@@ -10,6 +11,7 @@ const cardSchema = mongoose.Schema({
   link: {
     type: String,
     required: true,
+    validate: [isURL, 'Value is not valid url'],
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

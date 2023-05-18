@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import BadRequestError from '../utils/errors/BadRequestError.js';
+import ForbiddenError from '../utils/errors/ForbiddenError.js';
 import DocumentNotFoundError from '../utils/errors/DocumentNotFoundError.js';
 import Card from '../models/card.js';
 
@@ -46,8 +47,8 @@ export const deleteCardById = (req, res, next) => {
       if (!card) {
         throw new DocumentNotFoundError('Карточка c указанным _id не найдена');
       }
-      if (card.owner !== req.user) {
-        throw new BadRequestError(
+      if (card.owner._id !== req.user._id) {
+        throw new ForbiddenError(
           'Пользователь не является владельцем карточки',
         );
       }
