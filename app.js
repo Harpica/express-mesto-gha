@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import routes from './routes/index.js';
 import {
-  BASE_URL,
+  CLIENT_URL,
   DATABASE_NAME,
   DATABASE_PORT,
   PORT,
@@ -18,7 +18,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: BASE_URL,
+    origin: CLIENT_URL,
     credentials: true,
     optionSuccessStatus: 200,
   }),
