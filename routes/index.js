@@ -23,7 +23,7 @@ routes.get('/crash-test', () => {
 });
 
 // Any other path
-routes.use(() => {
+routes.use(auth, () => {
   throw new DocumentNotFoundError('Данная страница не найдена');
 });
 // Middleware to handle all errors
