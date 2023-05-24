@@ -7,6 +7,7 @@ import users from './partials/users.js';
 import validator from '../utils/validator.js';
 import { createUser, loginUser } from '../controllers/users.js';
 import { errorLogger, requestLogger } from '../middlewares/logger.js';
+import auth from '../middlewares/auth.js';
 
 const routes = express.Router();
 
